@@ -13,16 +13,29 @@ public class Board {
     }
 
     public void removeMatchingColors(){
-
         // check if there are any three matching colors next to each other and remove
+        // count instances of 3+ consecutive characters
         int matchCount = 1;
+        int total = 0;
+        for (int i = 1; i < this.ballsOnBoard.size(); i++){
+            if (this.ballsOnBoard.get(i).equals(this.ballsOnBoard.get(i - 1))) {
+                matchCount++;
+            }
+            else if (matchCount >= 3) {
+                total++;
+                matchCount = 1;
+            }
+        }
+
+        matchCount = 1;
         int i = 1;
         while (i < this.ballsOnBoard.size()) {
             if (this.ballsOnBoard.get(i).equals(this.ballsOnBoard.get(i - 1))) {
                 matchCount++;
             } else if (matchCount >= 3) {
                 this.ballsOnBoard.subList(i-matchCount, i).clear();
-                i = i-matchCount+1;
+                //i = i-matchCount+1;
+                i = 1;
                 matchCount = 1;
                 continue;
             } else {
@@ -56,6 +69,7 @@ public class Board {
         for (Ball b : ballsOnBoard){
             if (b.color == min.getKey()) return ballsOnBoard.indexOf(b);
         }
+
         return -1;
     }
 
@@ -64,13 +78,13 @@ public class Board {
     }
 
     public int findMinStep(Hand hand, int result){
-        while (!this.isEmpty() || !hand.isEmpty()){
+        while (!this.isEmpty()){
             this.removeMatchingColors();
             if (this.isEmpty()) break;
 
             int targetOnBoard = this.pickNext();
             int index = hand.contains(this.ballsOnBoard.get(targetOnBoard));
-            if (index > 0){
+            if (index > -1){
                 ballsOnBoard.add(targetOnBoard, hand.throwBall(index));
                 result++;
                 result = this.findMinStep(hand, result);
@@ -78,9 +92,6 @@ public class Board {
             else if (!hand.isEmpty()){
                 result++;
                 ballsOnBoard.add(targetOnBoard, hand.throwBall(hand.balls.size()-1));
-                result = this.findMinStep(hand, result);
-            }
-            else if (!ballsOnBoard.isEmpty()){
                 result = this.findMinStep(hand, result);
             }
             else break;
