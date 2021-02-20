@@ -16,15 +16,19 @@ public class Board {
 
         // check if there are any three matching colors next to each other and remove
         int matchCount = 1;
-        for (int i = 1; i < this.ballsOnBoard.size(); i++) {
+        int i = 1;
+        while (i < this.ballsOnBoard.size()) {
             if (this.ballsOnBoard.get(i).equals(this.ballsOnBoard.get(i - 1))) {
                 matchCount++;
             } else if (matchCount >= 3) {
-                this.ballsOnBoard.removeAll(this.ballsOnBoard.subList(i-matchCount+1, i));
+                this.ballsOnBoard.subList(i-matchCount, i).clear();
+                i = i-matchCount+1;
                 matchCount = 1;
+                continue;
             } else {
                 matchCount = 1;
             }
+            i++;
         }
 
         if (matchCount >= 3) {
@@ -85,5 +89,14 @@ public class Board {
         if (!ballsOnBoard.isEmpty()) result = -1;
 
         return result;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder str = new StringBuilder();
+        for (Ball b : ballsOnBoard){
+            str.append(b.color);
+        }
+        return str.toString();
     }
 }
