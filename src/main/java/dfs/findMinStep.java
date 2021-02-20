@@ -5,12 +5,15 @@ import static org.junit.Assert.*;
 public class findMinStep {
 
     public int findMinStep(String _board, String _hand) {
-        int result = -1;
-
         Board board = new Board(_board);
         Hand hand = new Hand(_hand);
 
         return board.findMinStep(hand, 0);
+    }
+
+    /* ANSWER */
+    public int findMinStep2(String _board, String _hand) {
+        return -1;
     }
 
     public static void main(String[] args){
@@ -35,25 +38,33 @@ public class findMinStep {
     public static void test01(){
         String board = "B", hand = "BB";
         findMinStep main = new findMinStep();
-        assertEquals(2, main.findMinStep(board, hand));
+        int result = main.findMinStep(board, hand);
+        System.out.println(result);
+        assertEquals(2, result);
     }
 
     public static void test0(){
         String board = "BWW", hand = "WBB";
         findMinStep main = new findMinStep();
-        assertEquals(3, main.findMinStep(board, hand));
+        int result = main.findMinStep(board, hand);
+        System.out.println(result);
+        assertEquals(3, result);
     }
 
     public static void test1(){
         String board = "WRRBBW", hand = "RB";
         findMinStep main = new findMinStep();
-        assertEquals(-1, main.findMinStep(board, hand));
+        int result = main.findMinStep(board, hand);
+        System.out.println(result);
+        assertEquals(-1, result);
     }
 
     public static void test2(){
         String board = "WWRRBBWW", hand = "WRBRW";
         findMinStep main = new findMinStep();
-        assertEquals(2, main.findMinStep(board, hand));
+        int result = main.findMinStep(board, hand);
+        System.out.println(result);
+        assertEquals(2, result);
     }
 
     public static void test3(){
@@ -61,7 +72,7 @@ public class findMinStep {
         Board board = new Board(_board);
         Hand hand = new Hand(_hand);
         findMinStep main = new findMinStep();
-        board.removeMatchingColors();
+        board.removeMatchingColors(board.ballsOnBoard);
         assertEquals("", board.toString());
     }
 
@@ -70,7 +81,7 @@ public class findMinStep {
         Board board = new Board(_board);
         Hand hand = new Hand(_hand);
         findMinStep main = new findMinStep();
-        board.removeMatchingColors();
+        board.removeMatchingColors(board.ballsOnBoard);
         assertEquals("", board.toString());
     }
 
@@ -79,7 +90,7 @@ public class findMinStep {
         Board board = new Board(_board);
         Hand hand = new Hand(_hand);
         findMinStep main = new findMinStep();
-        board.removeMatchingColors();
+        board.removeMatchingColors(board.ballsOnBoard);
         assertEquals("BBWW", board.toString());
     }
 
@@ -88,7 +99,7 @@ public class findMinStep {
         Board board = new Board(_board);
         Hand hand = new Hand(_hand);
         findMinStep main = new findMinStep();
-        board.removeMatchingColors();
+        board.removeMatchingColors(board.ballsOnBoard);
         assertEquals("BBYY", board.toString());
     }
 

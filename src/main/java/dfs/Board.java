@@ -12,9 +12,43 @@ public class Board {
         }
     }
 
-    public void removeMatchingColors(){
+    public void removeMatchingColors(List<Ball> balls){
+        /* recursive method */
+        int matchCount = 0;
+        for (int i = 0, j = 0; j < balls.size(); ++j){
+            if (balls.get(j).equals(balls.get(i))){
+                matchCount++;
+                continue;
+            }
+            else if (j - i >= 3) {
+                List<Ball> temp = new ArrayList<Ball>();
+                if (i > 0)
+                    temp.addAll(balls.subList(0, i));
+                temp.addAll(balls.subList(j, balls.size()));
+
+                balls.clear();
+                balls.addAll(temp);
+                matchCount = 0;
+
+                if (!balls.isEmpty())
+                    removeMatchingColors(balls);
+            }
+            else {
+                i = j;
+                matchCount = 1;
+            }
+        }
+
+        if (matchCount >= 3) {
+            int start = balls.size() - matchCount;
+            balls.removeAll(balls.subList(start, balls.size()));
+        }
+
+        //return balls;
+
         // check if there are any three matching colors next to each other and remove
         // count instances of 3+ consecutive characters
+        /*
         int matchCount = 1;
         int total = 0;
         for (int i = 1; i < this.ballsOnBoard.size(); i++){
@@ -47,28 +81,41 @@ public class Board {
         if (matchCount >= 3) {
             this.ballsOnBoard.removeAll(this.ballsOnBoard.subList(ballsOnBoard.size()-matchCount+1, ballsOnBoard.size()-1));
         }
+
+         */
     }
 
     public int pickNext() {
-        Map<Character,Integer> characterCount = new HashMap<Character,Integer>();
+        Map<Ball,Integer> characterCount = new HashMap<>();
+
         // count all characters
         for (Ball b : this.ballsOnBoard){
-            if (characterCount.containsKey(b.color))
-                characterCount.put(b.color, characterCount.get(b.color) + 1);
-            else characterCount.put(b.color, 1);
+            if (characterCount.containsKey(b)) {
+                int count = characterCount.get(b) + 1;
+                characterCount.put(b, count);
+            }
+            else {
+                characterCount.put(b, 1);
+            }
         }
 
         // return the character with smallest count
-        Map.Entry<Character, Integer> min = null;
-        for (Map.Entry<Character, Integer> entry : characterCount.entrySet()) {
+        Map.Entry<Ball, Integer> min = null;
+        for (Map.Entry<Ball, Integer> entry : characterCount.entrySet()) {
             if (min == null || min.getValue() > entry.getValue()) {
                 min = entry;
             }
         }
 
+        // return the first occurrence of this character
+        if (ballsOnBoard.contains(min.getKey())){
+            return ballsOnBoard.indexOf(min.getKey());
+        }
+
+        /*
         for (Ball b : ballsOnBoard){
             if (b.color == min.getKey()) return ballsOnBoard.indexOf(b);
-        }
+        }*/
 
         return -1;
     }
@@ -79,13 +126,15 @@ public class Board {
 
     public int findMinStep(Hand hand, int result){
         while (!this.isEmpty()){
-            this.removeMatchingColors();
+            this.removeMatchingColors(ballsOnBoard);
+
             if (this.isEmpty()) break;
 
             int targetOnBoard = this.pickNext();
             int index = hand.contains(this.ballsOnBoard.get(targetOnBoard));
             if (index > -1){
                 ballsOnBoard.add(targetOnBoard, hand.throwBall(index));
+
                 result++;
                 result = this.findMinStep(hand, result);
             }
