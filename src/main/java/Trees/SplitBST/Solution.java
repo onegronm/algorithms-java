@@ -11,6 +11,11 @@ import static org.junit.Assert.*;
 public class Solution {
 
     public TreeNode[] splitBST(TreeNode root, int V){
+
+        if (root == null){
+            return new TreeNode[] { null, null };
+        }
+
         TreeNode[] result = new TreeNode[2];
 
         // find target node
@@ -18,12 +23,66 @@ public class Solution {
         // copy target and its children into a new tree
         TreeNode treeCopy = copy(target);
         // remove the target from the original tree
-        deleteNode(root, V);
+        if (!deleteNode(root, V)){
+            root = null;
+        }
+
+        // find node not belonging in tree copy and remove it
+        TreeNode notBelonging = findNodeGreaterThanRoot(treeCopy);
+        if (notBelonging != null){
+
+            TreeNode copyNotBelonging = copy(notBelonging);
+            deleteNode(treeCopy, notBelonging.val);
+
+            // insert not belonging into original tree
+            insertNode(root, copyNotBelonging);
+        }
 
         result[0] = treeCopy;
         result[1] = root;
 
         return result;
+    }
+
+    public boolean deleteNode(TreeNode root, int v){
+        TreeNode[] nodeToDelete = findNode(null, root, v);
+
+        if (nodeToDelete != null){
+            TreeNode parent = nodeToDelete[0];
+            if (parent != null){
+                if(parent.left != null && parent.left.equals(nodeToDelete[1])){
+                    parent.left = null;
+                    return true;
+                }
+                else if (parent.right != null && parent.right.equals(nodeToDelete[1])) {
+                    parent.right = null;
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public void insertNode(TreeNode tree, TreeNode a){
+        if (tree != null){
+            if (tree.left != null && a.val <= tree.val){
+                insertNode(tree.left, a);
+            }
+            if (tree.right != null && a.val > tree.val){
+                insertNode(tree.right, a);
+            }
+            if (a.val <= tree.val) tree.left = a;
+            else tree.right = a;
+        }
+    }
+
+    public TreeNode findNodeGreaterThanRoot(TreeNode root){
+        if (root != null){
+            if (root.right != null && root.right.val > root.val){
+                return root.right;
+            }
+        }
+        return null;
     }
 
     public TreeNode copy(TreeNode root){
@@ -38,45 +97,6 @@ public class Solution {
             }
         }
         return copy;
-    }
-
-    public void deleteNode(TreeNode root, int v){
-        TreeNode[] nodeToDelete = findNode(null, root, v);
-
-        if (nodeToDelete != null){
-            TreeNode parent = nodeToDelete[0];
-            if (parent != null){
-                if(parent.left.equals(nodeToDelete[1])) parent.left = null;
-                else if (parent.right.equals(nodeToDelete[1])) parent.right = null;
-            }
-        }
-    }
-
-    private List<TreeNode> getNodes(TreeNode target) {
-        if (target != null) {
-            List<TreeNode> children = new ArrayList<>();
-
-            children.addAll(getNodes(target.left));
-            children.add(target);
-            children.addAll(getNodes(target.right));
-
-            return children;
-        }
-        return new ArrayList<>();
-    }
-
-    public List<TreeNode> getLessThanNodes(TreeNode target, int v) {
-        if (target != null) {
-            List<TreeNode> children = new ArrayList<>();
-
-            children.addAll(getLessThanNodes(target.left,v));
-            if (target.val <= v)
-                children.add(target);
-            children.addAll(getLessThanNodes(target.right,v));
-
-            return children;
-        }
-        return new ArrayList<>();
     }
 
     public TreeNode getLessThanNode(TreeNode root, int v) {
@@ -127,11 +147,16 @@ public class Solution {
     }
 
     public static void main(String[] args){
+        /*
         findTest();
         getChildrenTest();
         findLessThanTest();
-        test0();
         findLessThanNodeTest();
+
+         */
+        test0();
+        test1();
+        test2();
     }
 
     public static void findTest(){
@@ -160,7 +185,7 @@ public class Solution {
 
          */
     }
-
+/*
     public static void getChildrenTest(){
         TreeNode root = new TreeNode(4);
         root.left = new TreeNode(2, new TreeNode(1), new TreeNode(3));
@@ -187,8 +212,7 @@ public class Solution {
         Solution s = new Solution();
         TreeNode t = s.getTarget(root, 7);
     }
-
-
+    */
 
     public static void test0(){
         TreeNode root = new TreeNode(4);
@@ -199,5 +223,21 @@ public class Solution {
         n = s.splitBST(root,2);
         assertEquals(n[0].val, 2);
         assertEquals(n[1].val, 4);
+    }
+
+    public static void test1(){
+        TreeNode root = new TreeNode(1);
+        Solution s = new Solution();
+        TreeNode[] n;
+        n = s.splitBST(root,1);
+        assertEquals(n[0].val, 1);
+        assertNull(n[1]);
+    }
+
+    public static void test2(){
+        Solution s = new Solution();
+        TreeNode[] n = s.splitBST(null,1);
+        assertNull(n[0]);
+        assertNull(n[1]);
     }
 }
