@@ -16,29 +16,36 @@ public class Solution {
             times.add(i);
         }
 
-        // int[] timeSeries = {1,2};
         int totalPoisonedTime = 0;
         for (int i = 0; i < times.size(); i++){
-            while (!poisonedState.isEmpty()){
-                int state = poisonedState.peek();
-                if (times.get(i) - state >= duration){
-                    // CASE: state is no longer valid so remove
-                    poisonedState.poll();
-                    // update poisoned time
-                    totalPoisonedTime += durations.getOrDefault(state, 0);
-                    // update duration of removed state
-                    durations.put(state, 0);
-                }
-                else {
-                    // CASE: state is still valid so update duration and continue
-                    durations.put(state, durations.get(state) - (times.get(i) - state));
-                    //totalPoisonedTime += durations.getOrDefault(state, 0);
-                    break;
+            /* UPDATE STATE START */
+            for (int state : poisonedState){
+                int howLongHasPassed = times.get(i) - state;
+                int newDuration = duration - howLongHasPassed < 0 ? 0 : duration - howLongHasPassed;
+                durations.put(state, newDuration);
+                if (howLongHasPassed - totalPoisonedTime > 0){
+                    int update = howLongHasPassed - totalPoisonedTime;
+                    if (update > duration) update = duration;
+                    totalPoisonedTime = totalPoisonedTime + update;
                 }
             }
-
+            /* UPDATE STATE END */
             poisonedState.add(times.get(i));
             durations.put(times.get(i), duration);
+        }
+
+        // update overlapping durations
+        if (!poisonedState.isEmpty()) {
+            int lastTime = times.get(times.size() - 1);
+            for (int i = times.size() - 1; i > -1; i--) {
+                int curTime = times.get(i);
+                int howLongHasPassed = lastTime - curTime;
+                if (howLongHasPassed > 0){
+                    int newDuration = durations.get(lastTime) - durations.get(curTime);
+                    if (newDuration < duration)
+                        durations.put(curTime, 0);
+                }
+            }
         }
 
         // do one last check for remaining states
@@ -51,11 +58,14 @@ public class Solution {
     }
 
     public static void main(String[] args){
-        simpleTest1();
-        simpleTest2();
-        simpleTest3();
-        simpleTest5();
+        simpleTest8();
+        simpleTest4();
+        simpleTest7();
         simpleTest6();
+        simpleTest5();
+        simpleTest3();
+        simpleTest2();
+        simpleTest1();
     }
 
     public static void simpleTest1(){
@@ -78,7 +88,7 @@ public class Solution {
 
     public static void simpleTest4(){
         Solution s = new Solution();
-        int[] timeSeries = { 1,2,3,4,5};
+        int[] timeSeries = { 1,2,3,4,5 };
         assertEquals(6, s.findPoisonedDuration(timeSeries, 2));
     }
 
@@ -92,5 +102,17 @@ public class Solution {
         Solution s = new Solution();
         int[] timeSeries = { 1,4,7 };
         assertEquals(9, s.findPoisonedDuration(timeSeries, 3));
+    }
+
+    public static void simpleTest7(){
+        Solution s = new Solution();
+        int[] timeSeries = { 1,2 };
+        assertEquals(6, s.findPoisonedDuration(timeSeries, 5));
+    }
+
+    public static void simpleTest8(){
+        Solution s = new Solution();
+        int[] timeSeries = { 1,2,3,4,5 };
+        assertEquals(9, s.findPoisonedDuration(timeSeries, 5));
     }
 }
