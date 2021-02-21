@@ -3,7 +3,7 @@ package Trees.SplitBST;
 import java.util.*;
 import static org.junit.Assert.*;
 /**
- * Difficulty: medium
+ * Difficulty: hard
  * Companies: Salesforce
  * https://leetcode.com/problems/split-bst/
  */
