@@ -1,8 +1,9 @@
-package dfs;
+package Backtracking;
 
 /**
  * TOPIC: BACKTRACKING
- * algorithmic-technique for solving problems recursively by trying to build a solution incrementally, one piece at a time, removing those solutions that fail to satisfy the constraints of the problem at any point of time
+ * algorithmic-technique for solving problems recursively by trying to build a solution incrementally, one piece at a time, REMOVING those solutions that fail to satisfy the CONSTRAINTS of the problem at any point of time
+ * considers searching every possible combination in order to solve a computational problem
  */
 
 import java.util.*;
@@ -67,14 +68,10 @@ public class findMinStep {
     }
 
     public static void main(String[] args){
-        /*
         test01();
         test0();
         test1();
-
-         */
         test2();
-        /*
         test3();
         test4();
         test5();
@@ -88,8 +85,6 @@ public class findMinStep {
         test13();
         test14();
         test15();
-
-         */
     }
 
     public static void test01(){

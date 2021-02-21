@@ -1,4 +1,4 @@
-package dfs;
+package Backtracking;
 
 public class Ball {
     char color;
