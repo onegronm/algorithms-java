@@ -42,13 +42,19 @@ public class Solution {
                     if (index <= origIndex){
                         j++;
                         break;
-                    } else break outerloop;
+                    } else {
+                        break outerloop;
+                    }
                 }
+                //if(tempStack.isEmpty()) j++;
             }
 
             if (j == T.length) j = T.length - 1;
 
             result[origIndex] = positions.get(T[j]).peek() - origIndex >= 0 ? positions.get(T[j]).peek() - origIndex : 0;
+            if (positions.get(T[j]).size() > 1){
+                positions.get(T[j]).pop();
+            }
         }
 
         return result;
@@ -60,7 +66,7 @@ public class Solution {
 
     public static void simpleTest1(){
         Solution s = new Solution();
-        int[] T = {73,74,75,71,69,72,76,73};
+        int[] T = {89,62,70,58,47,47,46,76,100,70};
         int[] r = s.dailyTemperatures(T);
     }
 }
