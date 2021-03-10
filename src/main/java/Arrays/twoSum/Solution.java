@@ -1,7 +1,5 @@
 package Arrays.twoSum;
 
-import org.junit.Assert;
-
 import java.util.*;
 import static org.junit.Assert.*;
 
